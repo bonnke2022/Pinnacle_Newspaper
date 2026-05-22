@@ -1,0 +1,114 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* ── Fonts ── */
+  --font-sans:  'Inter', system-ui, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+
+  /* ── Pinnacle brand colors ── */
+  --color-brand:       oklch(0.45 0.18 22);    /* #d0021b red */
+  --color-brand-dark:  oklch(0.35 0.18 22);    /* #a30016 */
+  --color-navy:        oklch(0.28 0.09 255);   /* #1B2D5E */
+  --color-navy-light:  oklch(0.38 0.09 255);
+  --color-ink:         oklch(0.14 0 0);        /* #1a1a1a */
+  --color-ink-light:   oklch(0.32 0 0);        /* #444 */
+  --color-ink-muted:   oklch(0.50 0 0);        /* #767676 */
+  --color-ink-faint:   oklch(0.62 0 0);        /* #999 */
+  --color-rule:        oklch(0.89 0 0);        /* #e0e0e0 */
+
+  /* ── shadcn tokens (new-york, slate base, OKLCH) ── */
+  --color-background:          oklch(1 0 0);
+  --color-foreground:          oklch(0.14 0 0);
+  --color-card:                oklch(1 0 0);
+  --color-card-foreground:     oklch(0.14 0 0);
+  --color-popover:             oklch(1 0 0);
+  --color-popover-foreground:  oklch(0.14 0 0);
+  --color-primary:             oklch(0.28 0.09 255);   /* navy */
+  --color-primary-foreground:  oklch(1 0 0);
+  --color-secondary:           oklch(0.97 0.005 255);
+  --color-secondary-foreground:oklch(0.14 0 0);
+  --color-muted:               oklch(0.97 0.005 255);
+  --color-muted-foreground:    oklch(0.50 0 0);
+  --color-accent:              oklch(0.45 0.18 22);    /* red */
+  --color-accent-foreground:   oklch(1 0 0);
+  --color-destructive:         oklch(0.45 0.18 22);
+  --color-destructive-foreground: oklch(1 0 0);
+  --color-border:              oklch(0.90 0.005 255);
+  --color-input:               oklch(0.90 0.005 255);
+  --color-ring:                oklch(0.28 0.09 255);
+
+  /* ── Chart colors ── */
+  --color-chart-1: oklch(0.28 0.09 255);   /* navy */
+  --color-chart-2: oklch(0.45 0.18 22);    /* red */
+  --color-chart-3: oklch(0.45 0.09 255);
+  --color-chart-4: oklch(0.65 0.18 22);
+  --color-chart-5: oklch(0.65 0 0);
+
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * { box-sizing: border-box; border-color: var(--color-border); }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  article p,
+  article li,
+  article blockquote {
+    font-family: var(--font-serif);
+  }
+}
+
+@layer components {
+  /* ── Nav ── */
+  .nav-pill {
+    @apply px-3 py-1 text-[13px] font-medium text-ink-light hover:text-ink
+           rounded hover:bg-gray-100 transition-colors whitespace-nowrap;
+  }
+  .nav-pill.active { @apply text-brand font-semibold; }
+
+  /* ── Section divider (The Conversation style) ── */
+  .section-rule {
+    @apply flex items-center gap-3 mb-5;
+  }
+  .section-rule span {
+    @apply text-[11px] font-bold uppercase tracking-widest text-ink shrink-0;
+  }
+  .section-rule::after {
+    content: '';
+    @apply flex-1 h-px bg-ink;
+  }
+
+  /* ── Article card labels ── */
+  .card-category {
+    @apply text-[11px] font-bold uppercase tracking-wider text-brand;
+  }
+  .card-title {
+    @apply font-serif font-bold leading-snug text-ink hover:text-brand transition-colors;
+  }
+
+  /* ── Article body prose ── */
+  .article-body {
+    @apply prose prose-lg max-w-none
+      prose-headings:font-sans prose-headings:font-bold
+      prose-a:text-brand prose-a:no-underline hover:prose-a:underline
+      prose-blockquote:border-brand prose-blockquote:not-italic
+      prose-img:rounded prose-img:w-full;
+    font-family: var(--font-serif);
+  }
+
+  /* ── Admin form field ── */
+  .field {
+    @apply w-full border border-rule rounded px-3 py-2 text-sm
+           focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy
+           transition-colors placeholder:text-ink-faint bg-white;
+  }
+}

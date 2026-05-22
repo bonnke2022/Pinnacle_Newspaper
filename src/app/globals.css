@@ -8,6 +8,9 @@
   --font-sans:  'Inter', system-ui, sans-serif;
   --font-serif: 'Lora', Georgia, serif;
 
+  --width-site: 1200px;
+  --width-reading: 740px;
+
   /* ── Pinnacle brand colors ── */
   --color-brand:       oklch(0.45 0.18 22);    /* #d0021b red */
   --color-brand-dark:  oklch(0.35 0.18 22);    /* #a30016 */

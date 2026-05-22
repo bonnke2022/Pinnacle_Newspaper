@@ -8,16 +8,16 @@ import { initials } from '@/lib/utils'
 
 export const revalidate = 300
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const author = await getAuthorBySlug(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const author = await getAuthorBySlug((await params).slug)
   if (!author) return { title: 'Not found' }
   return { title: author.name, description: `${author.title}, ${author.institution}` }
 }
 
-export default async function AuthorPage({ params }: { params: { slug: string } }) {
-  const [author, breaking] = await Promise.all([getAuthorBySlug(params.slug), getBreakingHeadlines(4)])
+export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
+  const [author, breaking] = await Promise.all([getAuthorBySlug((await params).slug), getBreakingHeadlines(4)])
   if (!author) notFound()
-  const articles = await getArticlesByAuthor(params.slug)
+  const articles = await getArticlesByAuthor((await params).slug)
 
   return (
     <>

@@ -15,8 +15,8 @@ export function PinnacleLogo({ variant = 'default', height = 48, className = '' 
 
   return (
     <svg
-      width={w}
-      height={height}
+      width={120}
+      height={120}
       viewBox="0 0 260 120"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
@@ -50,7 +50,7 @@ export function PinnacleLogo({ variant = 'default', height = 48, className = '' 
         textAnchor="middle"
         fontFamily="Arial, Helvetica, sans-serif"
         fontWeight="700"
-        fontSize="12"
+        fontSize="18"
         letterSpacing="5"
         fill={subColor}
       >

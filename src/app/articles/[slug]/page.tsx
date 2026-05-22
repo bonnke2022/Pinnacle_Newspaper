@@ -20,8 +20,8 @@ export async function generateStaticParams() {
   return slugs.map(slug => ({ slug }))
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const a = await getArticleBySlug(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const a = await getArticleBySlug((await params).slug)
   if (!a) return { title: 'Not found' }
   const img = a.cover_image ?? `${SITE_URL}/api/og?title=${encodeURIComponent(a.title)}&author=${encodeURIComponent(a.author?.name ?? '')}`
   return {
@@ -39,9 +39,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const [article, breaking] = await Promise.all([
-    getArticleBySlug(params.slug),
+    getArticleBySlug((await params).slug),
     getBreakingHeadlines(4),
   ])
   if (!article) notFound()
@@ -116,7 +116,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
                 <ShareBar url={articleUrl} title={article.title} />
               </div>
             )}
-
             {/* Cover image */}
             {article.cover_image && (
               <div className="relative aspect-video w-full rounded overflow-hidden mb-8 bg-gray-100">

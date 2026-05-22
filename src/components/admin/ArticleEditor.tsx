@@ -23,6 +23,9 @@ interface EditorProps {
 }
 
 export function ArticleEditor({ article, authors, categories }: EditorProps) {
+  console.log('article prop: ', article?.title, article?.excerpt);
+  console.log('initial title state will be: ', article?.title ?? '');
+
   const router = useRouter()
   const isEdit = !!article
 
@@ -71,8 +74,22 @@ export function ArticleEditor({ article, authors, categories }: EditorProps) {
   }
 
   async function save() {
-    if (!title.trim() || !excerpt.trim() || !authorId || !categoryId) {
+     console.log('title:', title)
+    console.log('excerpt:', excerpt)
+    console.log('authorId:', authorId)
+    console.log('categoryId:', categoryId)
+    console.log('title state:', title);
+    console.log('excerpt: ', excerpt);
+    console.log('title input DOM value: ', (document.querySelector('input[name="title"]')));
+    console.log('excerpt textarea DOM value: ', (document.querySelector('textarea[name="excerpt"]')));
+
+    if (!title.trim()) {
       toast.error('Title, excerpt, author, and category are required.')
+      return
+    }
+
+    if(status === 'published' && (!excerpt.trim() || !authorId || !categoryId)){
+      toast.error('To publish, excerpt, author and category are all required.')
       return
     }
     if (!editor) return
@@ -138,6 +155,7 @@ export function ArticleEditor({ article, authors, categories }: EditorProps) {
         {/* Editor */}
         <div className="space-y-5">
           <input
+            name="title"
             type="text"
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -145,6 +163,7 @@ export function ArticleEditor({ article, authors, categories }: EditorProps) {
             className="w-full text-3xl font-serif font-bold text-ink border-none focus:outline-none bg-transparent placeholder:text-ink-faint"
           />
           <textarea
+            name="excerpt"
             value={excerpt}
             onChange={e => setExcerpt(e.target.value)}
             placeholder="Standfirst — one or two sentences that hook the reader…"

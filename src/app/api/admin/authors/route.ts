@@ -9,7 +9,7 @@ async function isAdmin() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await isAdmin())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { name, title, institution, bio, expertise } = await req.json()
   if (!name || !title || !institution) {

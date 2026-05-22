@@ -8,13 +8,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 export default async function AdminDashboard() {
-  if (!isAdminAuthenticated()) redirect('/admin/login')
+  if (!(await isAdminAuthenticated())) redirect('/admin/login')
   const articles = await adminGetAllArticles()
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top bar */}
-      <div className="bg-navy text-white px-6 py-3 flex items-center justify-between">
+      <div className="bg-navy text-white px-6 py-0 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <PinnacleLogo variant="white" height={30} />
           <Link href="/" target="_blank" className="text-blue-200 text-sm hover:text-white transition-colors">← View site</Link>

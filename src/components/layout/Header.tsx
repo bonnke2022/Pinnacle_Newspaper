@@ -1,9 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { PinnacleLogo } from '@/components/ui/PinnacleLogo'
+import { User } from '@supabase/supabase-js'
+import { supabaseBrowser } from '@/lib/supabase'
+import { Button } from '../ui/button'
 
 const CATEGORIES = [
   { name: 'Home',        href: '/' },
@@ -26,12 +29,34 @@ export function Header({ ticker = [] }: HeaderProps) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const [tickIdx, setTickIdx] = useState(0)
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (ticker.length < 2) return
     const t = setInterval(() => setTickIdx(i => (i + 1) % ticker.length), 5000)
     return () => clearInterval(t)
-  }, [ticker.length])
+  }, [ticker.length]);
+
+  useEffect(() => {
+    const supabase = supabaseBrowser();
+
+    // Get initial session
+    supabase.auth.getUser().then(({data}) => setUser(data.user));
+
+    // Listen for changes
+    const {data: {subscription}} = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = supabaseBrowser();
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-rule">
@@ -59,12 +84,19 @@ export function Header({ ticker = [] }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/admin"
-              className="hidden md:inline-flex text-[12px] font-semibold text-blue-200 hover:text-white border border-blue-300/30 px-3 py-1.5 rounded transition-colors"
-            >
-              Admin
-            </Link>
+            <div className="hidden md:flex items-center gap-3">
+              {user ? (
+                <>
+                  <Link href='/account' className='text-[12px] font-medium text-blue-200 hover:text-white transition-colors'>{user.user_metadata?.full_name?.split(' ')[0] ?? 'Account'}</Link>
+                  <Button onClick={handleSignOut} className='text-[12px] font-semibold text-blue-200 hover:text-white border border-blue-300/30 px-3 py-1.5 rounded transition-colors'>Sign out</Button>
+                </>
+              ) : (
+                <>
+                  <Link href='/login' className='text-[12px] font-medium text-blue-200 hover:text-white transition-colors'>Sign in</Link>
+                  <Link href='/signup' className='text-[12px] font-semibold text-white bg-brand hover:bg-brand-dark px-3 py-1.5 rounded transition-colors'>Sign up</Link>
+                </>
+              )}
+            </div>
             <button
               className="md:hidden p-2 text-white hover:bg-white/10 rounded transition-colors"
               onClick={() => setOpen(!open)}

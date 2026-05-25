@@ -6,6 +6,7 @@ import { adminGetAllArticles } from '@/lib/queries'
 import { PinnacleLogo } from '@/components/ui/PinnacleLogo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import PendingAuthors from '@/components/admin/PendingAuthors';
 
 export default async function AdminDashboard() {
   if (!(await isAdminAuthenticated())) redirect('/admin/login')
@@ -90,6 +91,7 @@ export default async function AdminDashboard() {
           </Link>
         </div>
       </div>
+      <PendingAuthors/>
     </div>
   )
 }

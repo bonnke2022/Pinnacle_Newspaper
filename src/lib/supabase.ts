@@ -5,8 +5,6 @@ import {
 
 import { createClient } from "@supabase/supabase-js";
 
-import { cookies } from "next/headers";
-
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const SVC = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -17,6 +15,7 @@ export const supabasePublic = createClient(URL, ANON);
 
 /* ---------------- SERVER ---------------- */
 export async function supabaseServer() {
+  const {cookies} = await import('next/headers');
   const jar = await cookies();
 
   return createServerClient(URL, ANON, {
@@ -34,6 +33,8 @@ export async function supabaseServer() {
     },
   });
 }
+
+export const supabaseBrowser = () => createBrowserClient(URL, ANON)
 
 /* ---------------- ADMIN ---------------- */
 

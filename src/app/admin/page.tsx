@@ -84,14 +84,17 @@ export default async function AdminDashboard() {
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-2 gap-4">
+       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div className="mt-6 grid">
           <Link href="/admin/authors" className="bg-white border border-rule rounded-lg p-4 hover:border-navy transition-colors group">
             <p className="font-semibold text-ink text-sm group-hover:text-navy transition-colors">Manage Authors</p>
             <p className="text-[12px] text-ink-muted mt-0.5">Add and edit author profiles</p>
           </Link>
         </div>
+        <PendingAuthors/>
+       </div>
       </div>
-      <PendingAuthors/>
+      
     </div>
   )
 }

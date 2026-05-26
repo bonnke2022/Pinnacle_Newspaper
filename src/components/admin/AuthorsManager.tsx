@@ -4,8 +4,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PinnacleLogo } from '@/components/ui/PinnacleLogo'
@@ -74,23 +72,23 @@ export function AuthorsManager({ authors }: { authors: Author[] }) {
               <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label>Full name *</Label>
-                  <Input value={form.name} onChange={e => update('name', e.target.value)} placeholder="Dr. Amaka Okafor" required />
+                  <input value={form.name} onChange={e => update('name', e.target.value)} placeholder="Dr. Amaka Okafor" required />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Title / position *</Label>
-                  <Input value={form.title} onChange={e => update('title', e.target.value)} placeholder="Professor of Political Economy" required />
+                  <input value={form.title} onChange={e => update('title', e.target.value)} placeholder="Professor of Political Economy" required />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Institution *</Label>
-                  <Input value={form.institution} onChange={e => update('institution', e.target.value)} placeholder="University of Lagos" required />
+                  <input value={form.institution} onChange={e => update('institution', e.target.value)} placeholder="University of Lagos" required />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Expertise (comma separated)</Label>
-                  <Input value={form.expertise} onChange={e => update('expertise', e.target.value)} placeholder="Fiscal Policy, Public Finance" />
+                  <input value={form.expertise} onChange={e => update('expertise', e.target.value)} placeholder="Fiscal Policy, Public Finance" />
                 </div>
                 <div className="space-y-1.5 md:col-span-2">
                   <Label>Bio</Label>
-                  <Textarea value={form.bio} onChange={e => update('bio', e.target.value)} rows={3} placeholder="Short biography…" />
+                  <textarea value={form.bio} onChange={e => update('bio', e.target.value)} rows={3} placeholder="Short biography…" />
                 </div>
                 <div className="md:col-span-2 flex gap-3">
                   <Button type="submit" variant="navy" disabled={saving}>

@@ -8,21 +8,19 @@ import TiptapLink from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Badge } from '@/components/ui/badge'
 import { PinnacleLogo } from '@/components/ui/PinnacleLogo'
 import type { ArticleFull, Author, Category } from '@/types'
 
 interface EditorProps {
-  article?: ArticleFull
-  authors: Author[]
-  categories: Category[]
+  article?: ArticleFull;
+  authors: Author[];
+  categories: Category[];
+  lockedAuthorId?: string;
 }
 
-export function ArticleEditor({ article, authors, categories }: EditorProps) {
+export function ArticleEditor({ article, authors, categories, lockedAuthorId }: EditorProps) {
   console.log('article prop: ', article?.title, article?.excerpt);
   console.log('initial title state will be: ', article?.title ?? '');
 
@@ -31,7 +29,7 @@ export function ArticleEditor({ article, authors, categories }: EditorProps) {
 
   const [title,      setTitle]      = useState(article?.title ?? '')
   const [excerpt,    setExcerpt]    = useState(article?.excerpt ?? '')
-  const [authorId,   setAuthorId]   = useState(article?.author_id ?? '')
+  const [authorId,   setAuthorId]   = useState(lockedAuthorId ?? article?.author_id ?? '');
   const [categoryId, setCategoryId] = useState(article?.category_id ?? '')
   const [status,     setStatus]     = useState<'draft'|'published'>(article?.status ?? 'draft')
   const [disclosure, setDisclosure] = useState(article?.disclosure ?? '')
@@ -204,12 +202,20 @@ export function ArticleEditor({ article, authors, categories }: EditorProps) {
             <p className="font-semibold text-sm text-ink">Article details</p>
 
             <div className="space-y-1.5">
-              <Label>Author *</Label>
-              <select value={authorId} onChange={e => setAuthorId(e.target.value)} className="field text-sm">
-                <option value="">Select author…</option>
-                {authors.map(a => <option key={a.id} value={a.id}>{a.name} — {a.institution}</option>)}
-              </select>
-              <a href="/admin/authors" target="_blank" className="text-[11px] text-brand hover:underline">+ Add new author</a>
+              <Label>Author</Label>
+              {lockedAuthorId ? (
+                <p className="text-sm text-ink py-2 font-medium">
+                  {authors[0]?.name} — {authors[0]?.institution}
+                </p>
+                ) : (
+                <select value={authorId} onChange={e => setAuthorId(e.target.value)} className="field text-sm">
+                  <option value="">Select author…</option>
+                  {authors.map(a => <option key={a.id} value={a.id}>{a.name} — {a.institution}</option>)}
+                </select>
+              )}
+              {!lockedAuthorId && (
+                <a href="/admin/authors" target="_blank" className="text-[11px] text-brand hover:underline">+ Add new author</a>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -239,7 +245,7 @@ export function ArticleEditor({ article, authors, categories }: EditorProps) {
 
           <div className="bg-white border border-rule rounded-lg p-5 space-y-1.5">
             <Label>Disclosure statement</Label>
-            <Textarea
+            <textarea
               value={disclosure}
               onChange={e => setDisclosure(e.target.value)}
               rows={4}

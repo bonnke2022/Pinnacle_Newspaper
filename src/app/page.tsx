@@ -73,7 +73,7 @@ export default async function HomePage() {
         {articles.length === 0 && (
           <div className="py-24 text-center text-ink-muted">
             <p className="text-lg font-serif mb-4">No articles published yet.</p>
-            <Link href="/admin" className="text-brand text-sm hover:underline">Publish your first article →</Link>
+            <Link href="/write" className="text-brand text-sm hover:underline">Publish your first article →</Link>
           </div>
         )}
       </main>

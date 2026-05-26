@@ -7,8 +7,8 @@ import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface Props {
     user: User;
@@ -25,6 +25,38 @@ const AccountClient = ({user, profile}: Props) => {
     const [fullName, setFullName] = useState(profile?.full_name ?? '');
     const [saving, setSaving] = useState(false);
     const [applying, setApplying] = useState(false);
+    const [showApplyForm, setShowApplyForm] = useState(false);
+    const [applyForm, setApplyForm] = useState({
+        title: '',
+        institution: '',
+        bio: '',
+        expertise: '',
+    });
+
+    async function handleApply(e: FormEvent) {
+        e.preventDefault();
+        setApplying(true);
+
+        const res = await fetch('/api/auth/apply-author', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                title: applyForm.title,
+                institution: applyForm.institution,
+                bio: applyForm.bio,
+                expertise: applyForm.expertise.split(',').map(s => s.trim()).filter(Boolean),
+            }),
+        });
+
+        const data = await res.json();
+        setApplying(false);
+        if(!res.ok) {
+            toast.error(data.error ?? 'Failed to apply.');
+            return;
+        }
+        toast.success('Application submitted! We will review it shortly.');
+        router.refresh();
+    }
 
     async function saveProfile(e: FormEvent) {
         e.preventDefault();
@@ -42,14 +74,15 @@ const AccountClient = ({user, profile}: Props) => {
 
     async function applyAsAuthor() {
         setApplying(true);
-        const supabase = supabaseBrowser();
-        const {error} = await supabase.from('profiles').update({role: 'author_pending'}).eq('id', user.id);
+        const res = await fetch('/api/auth/apply-author', {method: 'POST'});
+        const data = await res.json();
+
         setApplying(false);
-        if(error) {
-            toast.error('Failed to apply'); 
+        if(!res.ok) {
+            toast.error(data.error ?? 'Failed to apply.');
             return;
-        }
-        toast.success('Application submitted! We will review it shortly.');
+        };
+        toast.success('Application submitted! We will review it shortly.')
         router.refresh();
     }
 
@@ -69,16 +102,16 @@ const AccountClient = ({user, profile}: Props) => {
             </CardHeader>
             <CardContent>
                 <form onSubmit={saveProfile} className="space-y-4">
-                   <div className="space-y-1 5">
+                   <div className="space-y-1.5">
                      <Label htmlFor="fullName">Full Name</Label>
-                    <Input id="fullName" type="text" value={fullName} onChange={e => setFullName(e.target.value)} className="field" placeholder="Your full name"/>
+                    <input id="fullName" type="text" value={fullName} onChange={e => setFullName(e.target.value)} className="field" placeholder="Your full name"/>
                    </div>
-                   <div className="space-y-1 5">
+                   <div className="space-y-1.5">
                     <Label>Email</Label>
                     <p className="text-sm text-ink-muted py-2">{user.email}</p>
                    </div>
 
-                   <div className="space-y-1 5">
+                   <div className="space-y-1.5">
                     <Label>Role</Label>
                     <div>
                         <span className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${roleBadge[role]?.class}`}>{roleBadge[role]?.label}</span>
@@ -100,7 +133,39 @@ const AccountClient = ({user, profile}: Props) => {
                     <p className="text-sm text-ink-muted leading-relaxed">
                         Are you a researcher, academic, or subject matter expert? Apply to become an author and share your analysis with our readers.
                     </p>
-                    <Button variant="brand" onClick={applyAsAuthor} disabled={applying}>{applying ? 'Submitting...' : 'Apply as an Author'}</Button>
+                    {!showApplyForm ? (
+                        <Button variant='brand' onClick={() => setShowApplyForm(true)}>Apply as an Author</Button>
+                    ) : (
+                        <form onSubmit={handleApply} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <Label htmlFor="title">Title / Position *</Label>
+                                <input type="text" id="title" value={applyForm.title} onChange={e => setApplyForm(p => ({...p, title: e.target.value}))} placeholder="Professor of Political Economy" required className="field" />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label htmlFor="institution">Institution *</Label>
+                                <input type="text" id="institution" value={applyForm.institution} onChange={e => setApplyForm(p => ({...p, institution: e.target.value}))} placeholder="University of Lagos" required className="field" />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label htmlFor="bio">Short bio *</Label>
+                                <textarea id="bio" value={applyForm.bio} onChange={e => setApplyForm(p => ({...p, bio: e.target.value}))} placeholder="Brief description of your background and expertise" required rows={3} className="field" />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label htmlFor="expertise">Areas of expertise *</Label>
+                                <input type="text" id="expertise" value={applyForm.expertise} onChange={e => setApplyForm(p => ({...p, expertise: e.target.value}))} placeholder="e.g Fiscal Policy, Public Finance, Development Economics" required className="field" />
+                                <p className="text-[11px] text-ink-faint">Separate with commas</p>
+                            </div>            
+
+                            <div className="flex gap-3">
+                                <Button type="submit" variant='brand' disabled={applying}>
+                                    {applying ? 'Submitting...' : 'Submit application'}
+                                </Button>
+                                <Button type="button" variant='outline' onClick={() => setShowApplyForm(false)}>Cancel</Button>
+                            </div>                
+                        </form>
+                    )}
                 </CardContent>
             </Card>
         )}
@@ -127,9 +192,10 @@ const AccountClient = ({user, profile}: Props) => {
                     <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                             <svg className="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
                     </div>
-                    <div>
+                    <div className="flex-1">
                         <p className="font-semibold text-sm text-ink">You're an approved author</p>
-                        <p className="text-sm text-ink-muted mt-0 5">Your articles appear on Pinnacle Newspaper with your credentials.</p>
+                        <p className="text-sm text-ink-muted mt-0.5">Your articles appear on Pinnacle Newspaper with your credentials.</p>
+                        <Link href='/write' className="inline-block mt-3 text-sm font-semibold text-white bg-brand hover:bg-brand-dark px-4 py-2 rounded transition-colors ">Start writing → </Link>
                     </div>
                 </div>
             </CardContent>

@@ -7,7 +7,7 @@ import { PinnacleLogo } from '@/components/ui/PinnacleLogo'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { FormEvent, useState } from 'react'
-import {supabasePublic} from '@/lib/supabase';
+import {supabaseBrowser} from '@/lib/supabase';
 
 const Login = () => {
     const router = useRouter();
@@ -21,7 +21,7 @@ const Login = () => {
         setLoading(true);
         setError('');
 
-        const supabase = supabasePublic;
+        const supabase = supabaseBrowser();
         const {error} = await supabase.auth.signInWithPassword({email, password});
 
         if(error) {
@@ -48,7 +48,7 @@ const Login = () => {
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleLogin} className='space-y-4'>
-                   <div className="space-y-1 5">
+                   <div className="space-y-1.5">
                      <Label htmlFor='email'>Email</Label>
                     <Input id='email' type='email' value={email} onChange={e => setEmail(e.target.value)} placeholder='you@example.com' required autoFocus/>
                    </div>
@@ -72,7 +72,7 @@ const Login = () => {
                    </p>
                 </form>
             </CardContent>
-        </Card>'
+        </Card>
       
     </div>
   )

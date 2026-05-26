@@ -84,16 +84,16 @@ export function Header({ ticker = [] }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-3">
+            <div className="flex items-center gap-3">
               {user ? (
                 <>
-                  <Link href='/account' className='text-[12px] font-medium text-blue-200 hover:text-white transition-colors'>{user.user_metadata?.full_name?.split(' ')[0] ?? 'Account'}</Link>
+                  <Link href='/account' className='text-[12px] font-medium text-blue-200 hover:text-white transition-colors'>Hello, {user.user_metadata?.full_name?.split(' ')[0] ?? 'Account'}</Link>
                   <Button onClick={handleSignOut} className='text-[12px] font-semibold text-blue-200 hover:text-white border border-blue-300/30 px-3 py-1.5 rounded transition-colors'>Sign out</Button>
                 </>
               ) : (
                 <>
                   <Link href='/login' className='text-[12px] font-medium text-blue-200 hover:text-white transition-colors'>Sign in</Link>
-                  <Link href='/signup' className='text-[12px] font-semibold text-white bg-brand hover:bg-brand-dark px-3 py-1.5 rounded transition-colors'>Sign up</Link>
+                  <Link href='/signup' className='hidden lg:flex text-[12px] font-semibold text-white bg-brand hover:bg-brand-dark px-3 py-1.5 rounded transition-colors'>Sign up</Link>
                 </>
               )}
             </div>
@@ -111,6 +111,8 @@ export function Header({ ticker = [] }: HeaderProps) {
           </div>
         </div>
       </div>
+
+      
 
       {/* Category nav */}
       <nav className="hidden md:block bg-white border-b border-rule">
@@ -143,9 +145,7 @@ export function Header({ ticker = [] }: HeaderProps) {
               {c.name}
             </Link>
           ))}
-          <Link href="/admin" className="block px-4 py-3 text-sm font-semibold text-brand">
-            Admin →
-          </Link>
+         
         </div>
       )}
     </header>

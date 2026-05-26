@@ -11,7 +11,9 @@ export function HeroCard({ a }: { a: ArticleFull }) {
           <Image src={a.cover_image} alt={a.title} fill priority className="object-cover" sizes="(max-width:1200px) 100vw,1200px" />
         </div>
       )}
-      <Link href={`/category/${a.category.slug}`} className="card-category block mb-2">{a.category.name}</Link>
+      {a.category && (
+        <Link href={`/category/${a.category.slug}`} className="card-category block mb-2">{a.category.name}</Link>
+      )}
       <h1 className="font-serif font-bold text-3xl md:text-4xl text-ink leading-tight mb-3">
         <Link href={`/articles/${a.slug}`} className="hover:text-brand transition-colors">{a.title}</Link>
       </h1>
@@ -29,7 +31,9 @@ export function GridCard({ a }: { a: ArticleFull }) {
           <Image src={a.cover_image} alt={a.title} fill className="object-cover hover:scale-105 transition-transform duration-500" sizes="(max-width:768px) 100vw,400px" />
         </div>
       )}
-      <Link href={`/category/${a.category.slug}`} className="card-category">{a.category.name}</Link>
+      {a.category && (
+        <Link href={`/category/${a.category.slug}`} className="card-category">{a.category.name}</Link>
+      )}
       <h3 className="card-title text-[17px] font-serif font-bold leading-snug">
         <Link href={`/articles/${a.slug}`}>{a.title}</Link>
       </h3>
@@ -42,7 +46,9 @@ export function GridCard({ a }: { a: ArticleFull }) {
 export function CompactCard({ a }: { a: ArticleFull }) {
   return (
     <article className="py-3 border-b border-rule last:border-0">
-      <Link href={`/category/${a.category.slug}`} className="card-category">{a.category.name}</Link>
+      {a.category && (
+        <Link href={`/category/${a.category.slug}`} className="card-category">{a.category.name}</Link>
+      )}
       <h4 className="card-title text-[14px] font-serif font-bold mt-1 line-clamp-3">
         <Link href={`/articles/${a.slug}`}>{a.title}</Link>
       </h4>

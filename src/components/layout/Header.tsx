@@ -116,7 +116,7 @@ export function Header({ ticker = [] }: HeaderProps) {
 
       {/* Category nav */}
       <nav className="hidden md:block bg-white border-b border-rule">
-        <div className="max-w-site mx-auto px-4">
+        <div className="max-w-site mx-auto px-4 flex items-center ">
           <ul className="flex items-center gap-0.5 py-1 overflow-x-auto">
             {CATEGORIES.map(c => (
               <li key={c.href} className="shrink-0">

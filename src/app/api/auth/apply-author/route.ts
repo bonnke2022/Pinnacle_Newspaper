@@ -5,6 +5,9 @@ export async function POST(req: NextRequest) {
     const supabase = await supabaseServer();
     const {data: {user}} = await supabase.auth.getUser();
 
+    console.log('service role key exists: ', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+    console.log('key starts with: ', process.env.SUPABASE_SERVICE_ROLE_KEY?.substring(0, 10));
+
     if(!user) return NextResponse.json({error: 'Unauthorized'}, {status: 401});
 
     const {title, institution, bio, expertise} = await req.json();

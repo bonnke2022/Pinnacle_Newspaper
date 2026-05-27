@@ -9,26 +9,36 @@ export async function getPublishedArticles(
 ) {
   const db = await supabaseServer()
 
-  let q = db
-    .from('articles')
-    .select(WITH_RELATIONS)
-    .eq('status', 'published')
-    .order('published_at', { ascending: false })
-    .limit(limit)
-
   if (categorySlug) {
-    const { data: cat } = await db
+    // Use supabasePublic for categories — public data, no auth needed
+    const { data: cat } = await supabasePublic
       .from('categories')
       .select('id')
       .eq('slug', categorySlug)
       .single()
 
-    if (cat) {
-      q = q.eq('category_id', cat.id)
-    }
+    console.log('category found:', cat)
+
+    if (!cat) return []
+
+    const { data, error } = await db
+      .from('articles')
+      .select(WITH_RELATIONS)
+      .eq('status', 'published')
+      .eq('category_id', cat.id)
+      .order('published_at', { ascending: false })
+      .limit(limit)
+
+    console.log('articles found:', data?.length, error)
+    return (data ?? []) as ArticleFull[]
   }
 
-  const { data } = await q
+  const { data } = await db
+    .from('articles')
+    .select(WITH_RELATIONS)
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(limit)
 
   return (data ?? []) as ArticleFull[]
 }
@@ -100,8 +110,6 @@ export async function getBreakingHeadlines(limit = 5) {
 }
 
 export async function getAllCategories(): Promise<Category[]> {
-   console.log('SUPABASE URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-  console.log('SUPABASE ANON:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
   
   const { data, error } = await supabasePublic
     .from('categories')

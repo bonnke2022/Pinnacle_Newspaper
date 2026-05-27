@@ -22,7 +22,7 @@ const WritePage = async() => {
 
     const categories = await getAllCategories();
   return (
-    <ArticleEditor authors={[authors]} categories={categories} lockedAuthorId={author.id}/>
+    <ArticleEditor authors={[author]} categories={categories} lockedAuthorId={author.id} redirectTo="/account"/>
   )
 }
 

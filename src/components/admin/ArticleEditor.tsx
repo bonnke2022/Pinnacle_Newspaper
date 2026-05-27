@@ -18,9 +18,10 @@ interface EditorProps {
   authors: Author[];
   categories: Category[];
   lockedAuthorId?: string;
+  redirectTo?: string;
 }
 
-export function ArticleEditor({ article, authors, categories, lockedAuthorId }: EditorProps) {
+export function ArticleEditor({ article, authors, categories, lockedAuthorId, redirectTo = '/admin' }: EditorProps) {
   console.log('article prop: ', article?.title, article?.excerpt);
   console.log('initial title state will be: ', article?.title ?? '');
 
@@ -103,14 +104,21 @@ export function ArticleEditor({ article, authors, categories, lockedAuthorId }: 
 
     if (!res.ok) { toast.error(data.error ?? 'Save failed.'); return }
 
-    toast.success(status === 'published' ? 'Article published!' : 'Draft saved.')
-    router.push('/admin')
-    router.refresh()
+    if(status === 'published') {
+      toast.success('Article published!');
+      router.push(`/articles/${data.slug}`);
+      router.refresh();
+    } else {
+      toast.success('Draft saved.');
+      router.push(redirectTo);
+    }
+    router.refresh();
+
   }
 
   async function handleDelete() {
     const res = await fetch(`/api/admin/articles/${article!.id}`, { method: 'DELETE' })
-    if (res.ok) { toast.success('Article deleted.'); router.push('/admin'); router.refresh() }
+    if (res.ok) { toast.success('Article deleted.'); router.push(redirectTo); router.refresh() }
     else toast.error('Delete failed.')
   }
 
@@ -131,7 +139,7 @@ export function ArticleEditor({ article, authors, categories, lockedAuthorId }: 
       <div className="bg-navy text-white px-6 py-3 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-5">
           <PinnacleLogo variant="white" height={28} />
-          <a href="/admin" className="text-blue-200 text-sm hover:text-white transition-colors">← Articles</a>
+          <a href={redirectTo} className="text-blue-200 text-sm hover:text-white transition-colors">← Articles</a>
           <span className="text-blue-300 text-sm">{isEdit ? 'Edit article' : 'New article'}</span>
         </div>
         <div className="flex items-center gap-3">
@@ -250,6 +258,7 @@ export function ArticleEditor({ article, authors, categories, lockedAuthorId }: 
               onChange={e => setDisclosure(e.target.value)}
               rows={4}
               placeholder="e.g. The author declares no conflict of interest…"
+              className='field'
             />
             <p className="text-[11px] text-ink-faint">Required by editorial standards. Shown at the bottom of the article.</p>
           </div>

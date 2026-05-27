@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import { GridCard } from '@/components/article/ArticleCard'
 import { getPublishedArticles, getAllCategories, getBreakingHeadlines } from '@/lib/queries'
 
-export const revalidate = 120
+export const revalidate = 0
 
 export async function generateStaticParams() {
   const cats = await getAllCategories()
@@ -29,8 +29,13 @@ console.log('Available slugs: ', cats.map((c:any) => c.slug))
   const cat = cats.find((c: any) => c.slug === slug)
   if (!cat) notFound()
 
-  const articles = await getPublishedArticles(24, slug)
-
+  let articles: any[] = [];
+  try {
+      const articles = await getPublishedArticles(24, slug)
+      console.log('articles result: ', articles.length);
+  } catch (error) {
+    console.error('getPublishedArticles error: ', error)
+  }
   return (
     <>
       <Header  />

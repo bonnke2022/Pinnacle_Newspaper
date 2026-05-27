@@ -71,7 +71,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Header ticker={breaking} />
 
-      <main className="max-w-site mx-auto px-4 py-8">
+      <main className="max-w-site mx-auto pl-40 pr-0 py-8 ">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">
 
           {/* Article */}

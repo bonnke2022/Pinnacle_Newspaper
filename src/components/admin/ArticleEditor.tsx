@@ -73,15 +73,6 @@ export function ArticleEditor({ article, authors, categories, lockedAuthorId, re
   }
 
   async function save() {
-     console.log('title:', title)
-    console.log('excerpt:', excerpt)
-    console.log('authorId:', authorId)
-    console.log('categoryId:', categoryId)
-    console.log('title state:', title);
-    console.log('excerpt: ', excerpt);
-    console.log('title input DOM value: ', (document.querySelector('input[name="title"]')));
-    console.log('excerpt textarea DOM value: ', (document.querySelector('textarea[name="excerpt"]')));
-
     if (!title.trim()) {
       toast.error('Title, excerpt, author, and category are required.')
       return

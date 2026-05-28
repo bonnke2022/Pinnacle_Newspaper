@@ -17,7 +17,6 @@ export async function getPublishedArticles(
       .eq('slug', categorySlug)
       .single()
 
-    console.log('category found:', cat)
 
     if (!cat) return []
 
@@ -29,11 +28,10 @@ export async function getPublishedArticles(
       .order('published_at', { ascending: false })
       .limit(limit)
 
-    console.log('articles found:', data?.length, error)
     return (data ?? []) as ArticleFull[]
   }
 
-  const { data } = await db
+  const { data } = await supabasePublic
     .from('articles')
     .select(WITH_RELATIONS)
     .eq('status', 'published')
@@ -116,9 +114,6 @@ export async function getAllCategories(): Promise<Category[]> {
     .select('*')
     .order('name')
 
-  console.log('data: ', data);
-  console.log('error', JSON.stringify(error))
-
   return (data ?? []) as Category[]
 }
 
@@ -194,4 +189,29 @@ export async function adminGetAllArticles(): Promise<ArticleFull[]> {
     .order('created_at', { ascending: false })
 
   return (data ?? []) as ArticleFull[]
+}
+
+export async function searchArticles(query: string, limit = 20): Promise<ArticleFull[]> {
+  const { data } = await supabasePublic
+      .from('articles')
+      .select('*, author:authors(*), category:categories(*)')
+      .eq('status', 'published')
+      .or(`title.ilike.%${query}%,excerpt.ilike.%${query}%`)
+      .order('published_at', { ascending: false })
+      .limit(limit)  
+  
+    return (data ?? []) as ArticleFull[];
+}
+
+export async function getCuratedArticles(limit = 6, category?: string) {
+  let q = supabasePublic
+    .from('curated_articles')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  if (category) q = q.eq('category', category)
+
+  const { data } = await q
+  return data ?? []
 }

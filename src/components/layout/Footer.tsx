@@ -24,8 +24,14 @@ export function Footer() {
 
         <div>
           <p className="font-semibold text-ink text-[11px] uppercase tracking-wider mb-3">About</p>
-          {[['About us','/about'],['Our authors','/authors'],['Editorial charter','/about#charter'],['Republish','/republish'],['Contact','/contact']].map(([l,h]) => (
-            <Link key={h} href={h} className="block text-[13px] text-ink-muted hover:text-brand py-0.5 transition-colors">{l}</Link>
+          {[
+            ['About us',      '/about'],
+            ['Our authors',   '/authors'],
+            ['Write for us',  '/write-for-us'],  // ← add this
+            ['Republish',     '/republish'],
+            ['Contact',       '/contact'],
+          ].map(([l, h]) => (
+             <Link key={h} href={h} className="block text-[13px] text-ink-muted hover:text-brand py-0.5 transition-colors">{l}</Link> 
           ))}
         </div>
 

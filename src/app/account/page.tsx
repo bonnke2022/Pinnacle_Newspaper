@@ -15,7 +15,7 @@ const Account = async() => {
   return (
     <>
       <Header/>
-      <main className="max-w-site mx-auto px-4 py-10">
+      <main className="max-w-6xl mx-auto px-4 py-10">
         <div className="max-w-reading mx-auto">
             <h1 className="font-serif text-3xl font-bold text-ink mb-8">Your account</h1>
             <AccountClient user={user} profile={profile}/>

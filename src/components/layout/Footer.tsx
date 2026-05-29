@@ -4,7 +4,7 @@ import { PinnacleLogo } from '@/components/ui/PinnacleLogo'
 export function Footer() {
   return (
     <footer className="border-t border-rule mt-16 bg-gray-50">
-      <div className="max-w-site mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="col-span-2 md:col-span-1">
           <Link href="/" className="inline-block mb-4">
             <PinnacleLogo variant="default" height={40} />

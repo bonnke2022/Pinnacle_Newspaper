@@ -72,7 +72,7 @@ export function Header({ ticker = [] }: HeaderProps) {
 
       {/* ── Navy identity bar ── */}
       <div className="bg-navy">
-        <div className="max-w-site mx-auto px-4 flex items-center justify-between h-14">
+        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
 
           {/* Logo */}
           <Link href="/" aria-label="Pinnacle Newspaper — Home">
@@ -113,7 +113,7 @@ export function Header({ ticker = [] }: HeaderProps) {
               </svg>
             </button>
 
-            <li className="shrink-0">
+            <li className="shrink-0 hidden md:block">
               <span className="w-px h-8 bg-rule block" />
             </li>
             <Link 
@@ -123,7 +123,7 @@ export function Header({ ticker = [] }: HeaderProps) {
               Write for us
             </Link>
 
-            <li className="shrink-0">
+            <li className="shrink-0 hidden md:block">
             <span className="w-px h-8 bg-rule block" />
           </li>
 
@@ -164,7 +164,7 @@ export function Header({ ticker = [] }: HeaderProps) {
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-2 text-white hover:bg-white/10 rounded transition-colors"
+              className="lg:hidden p-2 text-white hover:bg-white/10 rounded transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Menu"
             >
@@ -216,9 +216,9 @@ export function Header({ ticker = [] }: HeaderProps) {
       </div>
 
       {/* ── Category navigation ── */}
-      <nav className="hidden md:block bg-white border-b border-rule">
-        <div className="max-w-site mx-auto px-4">
-          <ul className="w-full flex items-center justify-center gap-4 py-1 overflow-x-auto scrollbar-none">
+      <nav className="hidden lg:block bg-white border-b border-rule">
+        <div className="max-w-6xl mx-auto px-1 lg:px-4">
+          <ul className="w-full flex items-center justify-center gap-0 lg:gap-8 py-1 overflow-x-auto scrollbar-none">
             {CATEGORIES.map(c => (
               <li key={c.href} className="shrink-0">
                 <Link
@@ -238,7 +238,7 @@ export function Header({ ticker = [] }: HeaderProps) {
 
       {/* ── Mobile menu ── */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-rule">
+        <div className="lg:hidden bg-white border-t border-rule">
           {CATEGORIES.map(c => (
             <Link
               key={c.href}
@@ -264,10 +264,16 @@ export function Header({ ticker = [] }: HeaderProps) {
               </>
             ) : (
               <>
-                <Link href="/login" className="text-sm font-medium text-ink hover:text-brand transition-colors">
+                <Link href="/login" className="text-sm font-medium text-ink hover:text-brand transition-colors py-2">
                   Sign in
                 </Link>
-                <Link href="/signup" className="text-sm font-semibold text-white bg-brand px-3 py-1 rounded hover:bg-brand-dark transition-colors">
+                 <Link 
+                  href="/write-for-us" 
+                  className="md:hidden text-[13px] text-ink hover:text-brand transition-colors whitespace-nowrap py-2"
+                >
+                  Write for us
+                </Link>
+                <Link href="/signup" className="text-sm font-semibold text-white bg-brand px-3 py-2 rounded hover:bg-brand-dark transition-colors">
                   Sign up
                 </Link>
               </>

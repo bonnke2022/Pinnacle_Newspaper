@@ -3,7 +3,7 @@
 import { supabaseBrowser } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
@@ -24,6 +24,9 @@ const AccountClient = ({user, profile}: Props) => {
     const router = useRouter();
     const [fullName, setFullName] = useState(profile?.full_name ?? '');
     const [saving, setSaving] = useState(false);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null)
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+    const [uploadingAvatar, setUploadingAvatar] = useState(false)
     const [applying, setApplying] = useState(false);
     const [showApplyForm, setShowApplyForm] = useState(false);
     const [applyForm, setApplyForm] = useState({
@@ -32,31 +35,55 @@ const AccountClient = ({user, profile}: Props) => {
         bio: '',
         expertise: '',
     });
-
-    async function handleApply(e: FormEvent) {
-        e.preventDefault();
-        setApplying(true);
-
-        const res = await fetch('/api/auth/apply-author', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                title: applyForm.title,
-                institution: applyForm.institution,
-                bio: applyForm.bio,
-                expertise: applyForm.expertise.split(',').map(s => s.trim()).filter(Boolean),
-            }),
-        });
-
-        const data = await res.json();
-        setApplying(false);
-        if(!res.ok) {
-            toast.error(data.error ?? 'Failed to apply.');
-            return;
-        }
-        toast.success('Application submitted! We will review it shortly.');
-        router.refresh();
+    function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0]
+        if (!file) return
+        setAvatarFile(file)
+        setAvatarPreview(URL.createObjectURL(file))
     }
+
+async function handleApply(e: React.FormEvent) {
+  e.preventDefault()
+  if (!avatarFile) {
+    toast.error('Please upload a profile photo.')
+    return
+  }
+  setApplying(true)
+
+  // Upload avatar first
+  setUploadingAvatar(true)
+  const form = new FormData()
+  form.append('file', avatarFile)
+  const uploadRes = await fetch('/api/admin/upload', {
+    method: 'POST',
+    body: form,
+  })
+  const uploadData = await uploadRes.json()
+  setUploadingAvatar(false)
+
+  if (!uploadRes.ok) {
+    toast.error('Failed to upload photo. Please try again.')
+    setApplying(false)
+    return
+  }
+
+  const res = await fetch('/api/auth/apply-author', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: applyForm.title,
+      institution: applyForm.institution,
+      bio: applyForm.bio,
+      expertise: applyForm.expertise.split(',').map(s => s.trim()).filter(Boolean),
+      avatar_url: uploadData.url,
+    }),
+  })
+  const data = await res.json()
+  setApplying(false)
+  if (!res.ok) { toast.error(data.error ?? 'Failed to apply.'); return }
+  toast.success('Application submitted! We will review it shortly.')
+  router.refresh()
+}
 
     async function saveProfile(e: FormEvent) {
         e.preventDefault();
@@ -157,6 +184,25 @@ const AccountClient = ({user, profile}: Props) => {
                                 <input type="text" id="expertise" value={applyForm.expertise} onChange={e => setApplyForm(p => ({...p, expertise: e.target.value}))} placeholder="e.g Fiscal Policy, Public Finance, Development Economics" required className="field" />
                                 <p className="text-[11px] text-ink-faint">Separate with commas</p>
                             </div>            
+
+                            <div className="space-y-1.5">
+                                <Label htmlFor="avatar">Profile photo *</Label>
+                                {avatarPreview && (
+                                    <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 mb-2">
+                                    <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
+                                    </div>
+                                )}
+                                <label className="flex items-center gap-2 w-full border border-rule rounded px-3 py-2 text-sm text-ink-muted hover:bg-gray-50 cursor-pointer transition-colors">
+                                    {avatarPreview ? 'Change photo' : 'Upload profile photo'}
+                                    <input
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    className="hidden"
+                                    onChange={handleAvatarChange}
+                                    />
+                                </label>
+                                <p className="text-[11px] text-ink-faint">JPEG, PNG or WebP. Will appear on your articles.</p>
+                            </div>
 
                             <div className="flex gap-3">
                                 <Button type="submit" variant='brand' disabled={applying}>

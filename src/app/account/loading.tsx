@@ -6,7 +6,7 @@ export default function AccountLoading() {
   return (
     <>
       <Header />
-      <main className="max-w-site mx-auto px-4 py-10">
+      <main className="max-w-6xl mx-auto px-4 py-10">
         <div className="max-w-reading mx-auto">
           <Skeleton className="h-9 w-48 mb-8" />
           <div className="space-y-6">

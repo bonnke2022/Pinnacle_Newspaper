@@ -25,9 +25,13 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
       <main className="max-w-site mx-auto px-4 py-10">
         <div className="max-w-reading mx-auto mb-10 pb-10 border-b border-rule">
           <div className="flex items-start gap-5">
-            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-ink-muted shrink-0">
-              {initials(author.name)}
-            </div>
+           <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center text-2xl font-bold text-ink-muted shrink-0">
+            {author.avatar_url ? (
+              <img src={author.avatar_url} alt={author.name} className="w-full h-full object-cover" />
+            ) : (
+              initials(author.name)
+            )}
+          </div>
             <div>
               <h1 className="font-serif text-3xl font-bold text-ink">{author.name}</h1>
               <p className="text-[15px] text-ink-muted mt-1">

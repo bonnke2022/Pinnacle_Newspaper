@@ -66,8 +66,16 @@ function AuthorLine({ author, date, readTime, small = false }: {
   if (!author) return null
   return (
     <div className="flex items-center gap-2">
-      <div className={`rounded-full bg-gray-100 flex items-center justify-center font-bold text-ink-muted shrink-0 ${small ? 'w-6 h-6 text-[10px]' : 'w-8 h-8 text-[11px]'}`}>
-        {initials(author.name)}
+      <div className={`rounded-full overflow-hidden bg-gray-100 flex items-center justify-center font-bold text-ink-muted shrink-0 ${small ? 'w-6 h-6 text-[10px]' : 'w-8 h-8 text-[11px]'}`}>
+        {author.avatar_url ? (
+          <img
+            src={author.avatar_url}
+            alt={author.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          initials(author.name)
+        )}
       </div>
       <div>
         <Link href={`/authors/${author.slug}`} className={`font-semibold text-ink hover:text-brand transition-colors block leading-none ${small ? 'text-[12px]' : 'text-[13px]'}`}>

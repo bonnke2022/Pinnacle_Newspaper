@@ -31,7 +31,8 @@ export default async function HomePage() {
   return (
     <>
       <Header ticker={breaking} />
-      <main className="max-w-site mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        
 
         {/* Hero + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 mb-10">

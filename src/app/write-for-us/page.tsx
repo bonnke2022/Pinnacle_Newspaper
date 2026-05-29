@@ -12,8 +12,8 @@ export default function WriteForUsPage() {
   return (
     <>
       <Header />
-      <main className="max-w-site mx-auto px-4 py-12">
-        <div className="max-w-reading mx-auto">
+      <main className="max-w-6xl mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
 
           {/* Hero */}
           <div className="mb-10 pb-8 border-b border-rule">

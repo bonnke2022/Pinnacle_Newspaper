@@ -71,7 +71,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Header ticker={breaking} />
 
-      <main className="max-w-site mx-auto pl-40 pr-0 py-8 ">
+      <main className="max-w-6xl mx-auto py-8 ">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">
 
           {/* Article */}
@@ -97,9 +97,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {/* Author row */}
             {article.author && (
               <div className="flex items-start gap-3 mb-6 pb-6 border-b border-rule">
-                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-ink-muted shrink-0">
-                  {initials(article.author.name)}
-                </div>
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center text-sm font-bold text-ink-muted shrink-0">
+                {article.author.avatar_url ? (
+                  <img src={article.author.avatar_url} alt={article.author.name} className="w-full h-full object-cover" />
+                ) : (
+                  initials(article.author.name)
+                )}
+              </div>
                 <div className="flex-1">
                   <Link href={`/authors/${article.author.slug}`} className="font-semibold text-ink hover:text-brand transition-colors text-[15px]">
                     {article.author.name}
@@ -148,9 +152,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {article.author && (
               <div className="mt-8 pt-8 border-t border-rule">
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-[15px] font-bold text-ink-muted shrink-0">
-                    {initials(article.author.name)}
-                  </div>
+                  <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center text-[15px] font-bold text-ink-muted shrink-0">
+                  {article.author.avatar_url ? (
+                    <img src={article.author.avatar_url} alt={article.author.name} className="w-full h-full object-cover" />
+                  ) : (
+                    initials(article.author.name)
+                  )}
+                </div>
                   <div>
                     <Link href={`/authors/${article.author.slug}`} className="font-serif font-bold text-[18px] hover:text-brand transition-colors">
                       {article.author.name}

@@ -106,6 +106,11 @@ const SignUp = () => {
                     <Button type="submit" variant="navy" className="w-full" disabled={loading}>{loading ? 'Creating account...' : 'Create account'}</Button>
 
                     <p className="text-center text-xs text-ink-faint leading-relaxed">
+                        Already have an account?
+                        <Link href='/login' className="text-brand hover:underline"> Apply as an author </Link>
+                        Sign In
+                    </p>
+                    <p className="text-center text-xs text-ink-faint leading-relaxed">
                         Want to write for Pinnacle?
                         <Link href='/write-for-us' className="text-brand hover:underline"> Apply as an author </Link>
                         after signing up.

@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     if(action === 'approve') {
         // Get their profile data
-        const {data: profile, error: profileError } = await db.from('profiles').select('full_name, title, institution, bio, expertise').eq('id', id).single();
+        const {data: profile, error: profileError } = await db.from('profiles').select('full_name, title, institution, bio, expertise, avatar_url').eq('id', id).single();
 
         if(profileError || !profile) {
             return NextResponse.json({error: 'Could not fetch profile'}, {status: 500})
@@ -35,15 +35,16 @@ export async function POST(req: NextRequest) {
         if((count ?? 0) > 0) slug = `${slug}-${Date.now()}`
 
         // Create the authors row
-        const {error: authorError} = await db.from('authors').insert({
+       const { error: authorError } = await db.from('authors').insert({
             id,
-            name: profile.full_name ?? 'Unknown',
+            name:        profile.full_name ?? 'Unknown',
             slug,
-            title: profile.title ?? '',
+            title:       profile.title ?? '',
             institution: profile.institution ?? '',
-            bio: profile.bio ?? '',
-            expertise: profile.expertise ?? [],
-        });
+            bio:         profile.bio ?? '',
+            expertise:   profile.expertise ?? [],
+            avatar_url:  profile.avatar_url ?? null,
+        })
         if(authorError) return NextResponse.json({error: authorError.message}, {status: 500})
     }
 

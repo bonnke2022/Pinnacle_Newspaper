@@ -1,12 +1,10 @@
-import type { Metadata } from 'next'
+"use client";
 import Link from 'next/link'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { FormEvent, useState } from 'react';
+import { toast } from 'sonner';
 
-export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with The Pinnacle Newspaper — Truth. Insight. Impact.',
-}
 
 const CONTACT_CHANNELS = [
   {
@@ -60,10 +58,8 @@ const CONTACT_CHANNELS = [
 ]
 
 const SOCIAL_LINKS = [
-  { label: 'Facebook',  href: 'https://facebook.com/thepinnaclenewspaper',  icon: 'f' },
-  { label: 'X (Twitter)', href: 'https://x.com/thepinnaclenews',             icon: 'x' },
-  { label: 'Instagram', href: 'https://instagram.com/thepinnaclenewspaper', icon: 'in' },
-  { label: 'LinkedIn',  href: 'https://linkedin.com/company/thepinnaclenewspaper', icon: 'li' },
+  { label: 'Facebook',  href: 'https://facebook.com/share/1CxVECJSmV/',  icon: 'f' },
+ 
 ]
 
 const ENQUIRY_TYPES = [
@@ -77,6 +73,40 @@ const ENQUIRY_TYPES = [
 ]
 
 export default function ContactPage() {
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const data = {
+      first_name: (form.first_name as any).value,
+      last_name: (form.last_name as any).value,
+      email: (form.email as any).value,
+      phone: (form.phone as any).value,
+      enquiry_type: (form.enquiry_type as any).value,
+      subject: (form.subject as any).value,
+      message: (form.message as any).value,
+    }
+
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data),
+    });
+
+    setLoading(false);
+
+    if(res.ok) {
+      setSubmitted(true);
+      toast.success('Message sent! We will get back to you within 1-2 business days')
+      form.reset();
+    } else {
+      toast.error('Failed to send message. Please try again.')
+    }
+  }
   return (
     <>
       <Header />
@@ -102,19 +132,19 @@ export default function ContactPage() {
           <section className="mb-16">
             <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-3">Reach Us</p>
             <h2 className="font-serif text-3xl font-bold text-ink mb-8">Contact Channels</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {CONTACT_CHANNELS.map(ch => (
                 <a
                   key={ch.label}
                   href={ch.href}
                   className="flex items-start gap-4 p-6 border border-rule rounded-lg hover:border-navy transition-colors group"
                 >
-                  <div className="w-10 h-10 bg-navy/10 rounded-full flex items-center justify-center shrink-0 text-navy group-hover:bg-navy group-hover:text-white transition-colors">
+                  <div className="w-12 h-10 bg-navy/10 rounded-full flex items-center justify-center shrink-0 text-navy group-hover:bg-navy group-hover:text-white transition-colors">
                     {ch.icon}
                   </div>
                   <div>
                     <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-0.5">{ch.label}</p>
-                    <p className="font-semibold text-ink text-[15px] mb-1">{ch.value}</p>
+                    <p className="font-semibold text-ink text-[13px] lg:text-[15px] mb-1">{ch.value}</p>
                     <p className="text-[13px] text-ink-muted leading-relaxed">{ch.description}</p>
                   </div>
                 </a>
@@ -130,7 +160,7 @@ export default function ContactPage() {
               <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-3">Send a Message</p>
               <h2 className="font-serif text-3xl font-bold text-ink mb-6">Get in Touch</h2>
 
-              <form className="space-y-5" action="#" method="POST">
+              <form className="space-y-5" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="first_name" className="block text-[13px] font-semibold text-ink mb-1.5">
@@ -235,9 +265,10 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
+                  disabled={loading}
                   className="w-full sm:w-auto inline-flex items-center justify-center bg-navy text-white px-10 py-3 rounded font-semibold hover:bg-navy/90 transition-colors"
                 >
-                  Send Message
+                  {loading ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>

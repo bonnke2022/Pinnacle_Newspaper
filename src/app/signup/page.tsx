@@ -107,8 +107,7 @@ const SignUp = () => {
 
                     <p className="text-center text-xs text-ink-faint leading-relaxed">
                         Already have an account?
-                        <Link href='/login' className="text-brand hover:underline"> Apply as an author </Link>
-                        Sign In
+                        <Link href='/login' className="hover:underline">Sign In</Link>          
                     </p>
                     <p className="text-center text-xs text-ink-faint leading-relaxed">
                         Want to write for Pinnacle?

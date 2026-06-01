@@ -37,7 +37,7 @@ export function Footer() {
 
         <div>
           <p className="font-semibold text-ink text-[11px] uppercase tracking-wider mb-3">Follow</p>
-          {[['Twitter / X','https://twitter.com/pinnaclenewspaper'],['Facebook','https://facebook.com'],['LinkedIn','https://linkedin.com']].map(([l,h]) => (
+          {[  [ 'Facebook', 'https://facebook.com/share/1CxVECJSmV/' ]].map(([l,h]) => (
             <a key={l} href={h} target="_blank" rel="noopener noreferrer" className="block text-[13px] text-ink-muted hover:text-brand py-0.5 transition-colors">{l}</a>
           ))}
         </div>
